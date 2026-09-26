@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Create and connect ideas on your Idea Sprout board." />
+  <title>My Idea Board — Idea Sprout</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232e5bff'/%3E%3Cpath d='M32 49V27' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M31 29c-10 0-15-5-15-14 10 0 15 5 15 14Zm2-6c9 0 14-5 14-13-9 0-14 5-14 13Z' fill='%23a8e663'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="board">
+  <main id="app" class="app">
+    <header class="topbar">
+      <a href="index.html" id="homeBtn" class="brand" aria-label="Back to projects"><span>🌱</span> Idea Sprout</a>
+      <label class="project-name"><span>Project name</span><input id="boardTitle" class="board-title" value="My bright ideas" aria-label="Project name" maxlength="40" /></label>
+      <div class="top-actions"><span id="saveStatus" class="saved"><i></i> Saved</span><button id="helpBtn" class="icon-btn" aria-label="Show help">?</button></div>
+    </header>
+    <section id="workspace" class="workspace" aria-label="Idea board">
+      <svg id="connections" class="connections" aria-hidden="true"><defs><marker id="arrowhead" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="6" refX="7.5" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4262d8"/></marker></defs><g id="lineGroup"></g></svg>
+      <canvas id="doodleCanvas"></canvas>
+      <div id="notesLayer" class="notes-layer"></div>
+      <div id="emptyHint" class="empty-hint"><span>👆</span><strong>Click anywhere to plant an idea</strong><small>You can move it around later</small></div>
+      <aside class="toolbox" aria-label="Idea tools">
+        <p>TOOLS</p>
+        <button class="tool active" data-tool="note"><span>▰</span> Sticky note</button>
+        <button class="tool" data-tool="connect"><span>↗</span> Connect ideas</button>
+        <button class="tool" data-tool="draw"><span>✎</span> Doodle</button>
+        <div class="tool-rule"></div><label class="mini-label">NOTE COLOR</label>
+        <div class="colors" id="colorPicker">
+          <button class="color active" data-color="#ffe678" style="--swatch:#ffe678" aria-label="Yellow"></button>
+          <button class="color" data-color="#ff9fb2" style="--swatch:#ff9fb2" aria-label="Pink"></button>
+          <button class="color" data-color="#9ee7d7" style="--swatch:#9ee7d7" aria-label="Mint"></button>
+          <button class="color" data-color="#a8c7ff" style="--swatch:#a8c7ff" aria-label="Blue"></button>
+          <button class="color" data-color="#d8b4fe" style="--swatch:#d8b4fe" aria-label="Purple"></button>
+        </div>
+        <label class="custom-color-row" for="customNoteColor"><span>Any color</span><input id="customNoteColor" type="color" value="#ffcc66" aria-label="Choose any sticky note color" /></label>
+        <div class="note-size-wrap"><label class="mini-label">NOTE SIZE</label><div class="note-sizes" role="group" aria-label="Sticky note size"><button data-note-size="small">S</button><button class="active" data-note-size="medium">M</button><button data-note-size="large">L</button></div></div>
+        <div id="drawOptions" class="draw-options" hidden>
+          <label class="mini-label">DRAWING TOOL</label>
+          <div class="shape-tools" role="group" aria-label="Drawing tool">
+            <button class="shape-tool active" data-shape="pen" title="Freehand pen">✎<span>Pen</span></button>
+            <button class="shape-tool" data-shape="line" title="Straight line">╱<span>Line</span></button>
+            <button class="shape-tool" data-shape="box" title="Rectangle">□<span>Box</span></button>
+            <button class="shape-tool" data-shape="circle" title="Circle">○<span>Circle</span></button>
+            <button class="shape-tool" data-shape="eraser" title="Pixel eraser">⌫<span>Eraser</span></button>
+          </div>
+          <div class="draw-settings"><label for="penColor">Ink</label><input id="penColor" type="color" value="#29417a" /><button id="clearDrawing" class="small-action">Erase all</button></div>
+          <label class="brush-size" for="brushSize"><span>Size</span><input id="brushSize" type="range" min="2" max="20" value="4" /><output id="brushSizeValue">4</output></label>
+        </div>
+        <button id="clearBtn" class="clear-btn">Clear board</button>
+      </aside>
+      <div id="connectTip" class="connect-tip" hidden>Choose two notes to connect them</div>
+    </section>
+    <dialog id="helpDialog"><button class="dialog-close" aria-label="Close help">×</button><div class="help-icon">💡</div><h2>How to grow ideas</h2><ol><li><b>Plant:</b> Pick a size, then click empty space for a sticky note.</li><li><b>Tag:</b> Type a tag, then press Enter or comma to make flair.</li><li><b>Move:</b> Drag a note by its dotted handle.</li><li><b>Connect:</b> Choose Connect, then click two notes.</li><li><b>Draw:</b> Use Pen, Line, Box, Circle, or Eraser. The size slider changes thickness.</li></ol></dialog>
+    <dialog id="clearDialog" class="confirm-dialog"><h2>Clear the whole board?</h2><p>This removes every note, connection, and doodle.</p><div><button id="cancelClear">Keep my ideas</button><button id="confirmClear" class="danger">Clear board</button></div></dialog>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
