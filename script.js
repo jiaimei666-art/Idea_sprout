@@ -41,6 +41,47 @@
     const luminance=.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2];
     return (luminance+.05)/.05 >= 1.05/(luminance+.05) ? '#172044' : '#ffffff';
   }
+  // Search only changes visibility; note data, positions, and connections stay intact.
+  function applyNoteSearch() {
+    const search = $('#noteSearch');
+    if (!search) return;
+    const query = search.value.trim().toLowerCase();
+    const terms = query.split(/\s+/).filter(Boolean);
+    let visibleCount = 0;
+    state.notes.forEach(n => {
+      const fields = [n.name, n.title, n.text, ...(n.tags || []).flatMap(tag => [tag, `#${tag}`])]
+        .filter(value => value != null).map(value => String(value).toLowerCase());
+      const matches = terms.every(term => fields.some(field => field.includes(term)));
+      const el = $(`.note[data-id="${n.id}"]`);
+      if (el) el.classList.toggle('search-hidden', !matches);
+      if (matches) visibleCount++;
+    });
+    const selected = connectingFrom && $(`.note[data-id="${connectingFrom}"]`);
+    if (selected?.classList.contains('search-hidden')) {
+      selected.classList.remove('connect-ready');
+      connectingFrom = null;
+    }
+    $('#clearNoteSearch').hidden = !search.value;
+    $('#noteSearchStatus').textContent = query
+      ? (visibleCount ? `${visibleCount} of ${state.notes.length} notes` : 'No matching notes')
+      : '';
+    renderLines();
+  }
+  if ($('#noteSearch')) {
+    $('#noteSearch').addEventListener('input', applyNoteSearch);
+    $('#clearNoteSearch').addEventListener('click', () => {
+      $('#noteSearch').value = '';
+      applyNoteSearch();
+      $('#noteSearch').focus();
+    });
+    $('#noteSearch').addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        $('#noteSearch').value = '';
+        applyNoteSearch();
+      }
+    });
+  }
   function updateEmptyHint(){emptyHint.hidden=state.notes.length>0||state.hasDoodle;}
   function renderNotes(animateId = null) {
     notesLayer.innerHTML = state.notes.map(n => {
@@ -49,6 +90,7 @@
       return `<article class="note size-${size}${n.id === animateId ? ' new-note' : ''}" data-id="${n.id}" style="left:${n.x}px;top:${n.y}px;background:${n.color};--tilt:${n.tilt}deg;--note-text:${noteTextColor(n.color)}"><div class="note-handle" aria-label="Drag note"></div><button class="note-delete" aria-label="Delete note">×</button><textarea maxlength="220" aria-label="Idea text" placeholder="Type your idea...">${escapeText(n.text)}</textarea><div class="tag-row">${tags}<input class="tag-input" maxlength="20" aria-label="Add a tag" placeholder="+ tag"></div></article>`;
     }).join('');
     updateEmptyHint();
+    applyNoteSearch();
   }
   function createNote(x, y, text = '', color = chosenColor, tag = '', size = chosenNoteSize) {
     const sizes={small:[170,145],medium:[210,165],large:[260,210]},dims=sizes[size]||sizes.medium,w=Math.min(dims[0],workspace.clientWidth-16),h=dims[1];
@@ -63,6 +105,7 @@
     state.lines = state.lines.filter(l => state.notes.some(n=>n.id===l.a) && state.notes.some(n=>n.id===l.b));
     state.lines.forEach(l => {
       const a = $(`.note[data-id="${l.a}"]`), b = $(`.note[data-id="${l.b}"]`); if (!a || !b) return;
+      if (a.classList.contains('search-hidden') || b.classList.contains('search-hidden')) return;
       const ca = center(a), cb = center(b), p1 = edgePoint(a, cb), p2 = edgePoint(b, ca), bend = Math.max(35, Math.abs(p2.x-p1.x)*.18);
       const d = `M ${p1.x} ${p1.y} C ${p1.x+bend} ${p1.y}, ${p2.x-bend} ${p2.y}, ${p2.x} ${p2.y}`;
       lineGroup.insertAdjacentHTML('beforeend', `<path d="${d}"/><path class="hit" data-id="${l.id}" d="${d}"/>`);
@@ -116,7 +159,7 @@
   });
   notesLayer.addEventListener('input', e => {
     const el=e.target.closest('.note'), n=state.notes.find(x=>x.id===el?.dataset.id); if(!n)return;
-    if(e.target.matches('textarea')) { n.text=e.target.value; scheduleSave(); }
+    if(e.target.matches('textarea')) { n.text=e.target.value; scheduleSave(); applyNoteSearch(); }
   });
   notesLayer.addEventListener('keydown', e => {
     if(!e.target.matches('.tag-input') || !['Enter', ','].includes(e.key)) return;

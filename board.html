@@ -15,6 +15,12 @@
       <label class="project-name"><span>Project name</span><input id="boardTitle" class="board-title" value="My bright ideas" aria-label="Project name" maxlength="40" /></label>
       <div class="top-actions"><span id="saveStatus" class="saved"><i></i> Saved</span><button id="helpBtn" class="icon-btn" aria-label="Show help">?</button></div>
     </header>
+    <section class="board-search" role="search" aria-label="Search notes">
+      <label for="noteSearch">Search notes</label>
+      <input id="noteSearch" type="search" placeholder="Search by name, text, or tag…" aria-controls="notesLayer" autocomplete="off" />
+      <button id="clearNoteSearch" type="button" hidden>Clear</button>
+      <span id="noteSearchStatus" role="status" aria-live="polite" aria-atomic="true"></span>
+    </section>
     <section id="workspace" class="workspace" aria-label="Idea board">
       <svg id="connections" class="connections" aria-hidden="true"><defs><marker id="arrowhead" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="6" refX="7.5" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4262d8"/></marker></defs><g id="lineGroup"></g></svg>
       <canvas id="doodleCanvas"></canvas>

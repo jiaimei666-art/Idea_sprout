@@ -37,3 +37,17 @@ body.projects-body{height:100vh;min-height:0;overflow:auto}
 
 /* Reliable project removal dialog */
 .project-delete-dialog p{line-height:1.5}.project-delete-dialog p b{color:var(--ink)}
+
+/* Board note search */
+body[data-page="board"] .app{display:flex;flex-direction:column}
+body[data-page="board"] .topbar{flex-shrink:0}
+body[data-page="board"] .workspace{flex:1;min-height:0}
+.board-search{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 22px;background:#fff;border-bottom:2px solid var(--line);flex-shrink:0}
+.board-search label{font-size:.8rem;font-weight:900;color:#56617f}
+.board-search input{width:min(360px,100%);min-width:0;border:2px solid #b7c5f8;border-radius:10px;padding:8px 12px;background:#f8faff;color:var(--ink);font-size:.85rem}
+.board-search input:focus{outline:2px solid var(--blue);outline-offset:2px;border-color:var(--blue)}
+.board-search button{border:1.5px solid #b7c5f8;border-radius:8px;padding:7px 10px;background:#edf1ff;color:#3753ae;font-size:.8rem;font-weight:800;cursor:pointer}
+.board-search button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+#noteSearchStatus{font-size:.8rem;color:#69728e}
+.note.search-hidden{display:none!important}
+@media(max-width:760px){.board-search{padding:56px 12px 10px;gap:8px}.board-search label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.board-search input{flex:1;width:auto}#noteSearchStatus{flex-basis:100%}#noteSearchStatus:empty{display:none}}
